@@ -1,6 +1,7 @@
 package com.task.vak.controller;
 
 import com.task.vak.DTO.PersonCreateRequest;
+import com.task.vak.DTO.PersonFilteredResponse;
 import com.task.vak.DTO.PersonProfileResponse;
 import com.task.vak.DTO.PersonUpdateRequest;
 import com.task.vak.service.PersonService;
@@ -20,6 +21,12 @@ public class PersonController {
     @Autowired
     public PersonController(PersonService personService) {
         this.personService = personService;
+    }
+
+    @GetMapping(value = "v1/filter")
+    public ResponseEntity<List<PersonFilteredResponse>> getFilteredPersons(@RequestParam(required = false,name = "name") String name,
+                                                                          @RequestParam(required = false,name = "age")Integer age){
+        return personService.getFilteredPersons(name,age);
     }
 
     @GetMapping(value = "v1/{email}")

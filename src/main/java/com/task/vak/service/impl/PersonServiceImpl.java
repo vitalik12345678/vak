@@ -1,6 +1,7 @@
 package com.task.vak.service.impl;
 
 import com.task.vak.DTO.PersonCreateRequest;
+import com.task.vak.DTO.PersonFilteredResponse;
 import com.task.vak.DTO.PersonProfileResponse;
 import com.task.vak.DTO.PersonUpdateRequest;
 import com.task.vak.entity.Person;
@@ -28,8 +29,8 @@ public class PersonServiceImpl implements PersonService {
 
     private final DTOConvertor dtoConvertor;
     private final PersonRepository personRepository;
-    private final static String PERSON_NOT_EXIST = "person doesn't exist";
-    private final static String PERSON_EXIST = "person exist";
+    private static final String PERSON_NOT_EXIST = "person doesn't exist";
+    private static final String PERSON_EXIST = "person exist";
 
     @Autowired
     public PersonServiceImpl(DTOConvertor dtoConvertor, PersonRepository personRepository) {
@@ -39,10 +40,10 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public ResponseEntity<PersonProfileResponse> createPerson(PersonCreateRequest personCreateRequest) {
-        Person person = personRepository.findByEmail(personCreateRequest.getEmail()).orElseThrow(() -> {
+        if (personRepository.findByEmail(personCreateRequest.getEmail()).isPresent()){
             throw new ExistException(PERSON_EXIST);
-        });
-        person = dtoConvertor.convertToEntity(personCreateRequest, new Person());
+        }
+        Person person = dtoConvertor.convertToEntity(personCreateRequest, new Person());
         person.setAge(LocalDate.now().getYear() - personCreateRequest.getBirthDate().getYear());
         personRepository.save(person);
         return ResponseEntity.ok(dtoConvertor.convertToDTO(person, new PersonProfileResponse()));
@@ -74,6 +75,12 @@ public class PersonServiceImpl implements PersonService {
         existPerson.setAge(LocalDate.now().getYear() - personUpdateRequest.getBirthDate().getYear());
 
         return ResponseEntity.ok(dtoConvertor.convertToDTO(existPerson, new PersonProfileResponse()));
+    }
+
+    @Override
+    public ResponseEntity<List<PersonFilteredResponse>> getFilteredPersons(String name, Integer age) {
+        List<Person> persons = personRepository.filteredByAgeAndEmail(name, age);
+        return ResponseEntity.ok(persons.stream().map( element -> dtoConvertor.convertToDTO(element,new PersonFilteredResponse())).collect(Collectors.toList()));
     }
 
     private Person findPersonByEmail(String email) {
