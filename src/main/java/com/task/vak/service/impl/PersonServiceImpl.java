@@ -71,8 +71,9 @@ public class PersonServiceImpl implements PersonService {
     public ResponseEntity<PersonProfileResponse> updatePerson(PersonUpdateRequest personUpdateRequest, String email) {
 
         Person existPerson = findPersonByEmail(email);
-        existPerson = dtoConvertor.convertToEntity(personUpdateRequest, new Person());
-        existPerson.setAge(LocalDate.now().getYear() - personUpdateRequest.getBirthDate().getYear());
+        Person updatedPerson = dtoConvertor.convertToEntity(personUpdateRequest, new Person());
+        updatedPerson.setAge(LocalDate.now().getYear() - personUpdateRequest.getBirthDate().getYear());
+        updatedPerson.setEmail(existPerson.getEmail());
 
         return ResponseEntity.ok(dtoConvertor.convertToDTO(existPerson, new PersonProfileResponse()));
     }
