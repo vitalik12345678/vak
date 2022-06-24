@@ -12,19 +12,19 @@ import java.time.LocalDate;
 @Setter
 public class PersonCreateRequest {
 
-    @NotBlank
+    @NotBlank(message = "name is mull or empty")
     private String name;
-    @NotBlank
+    @NotBlank(message = "surname is mull or empty")
     private String surname;
     @Email
     private String email;
-    @NotBlank
+    @NotBlank(message = "phone is empty or null")
     private String phone;
-    @NotNull
+    @NotNull(message = "birthDate is mull or empty")
     private LocalDate birthDate;
-    @NotBlank
+    @NotBlank(message = "username is mull or empty")
     private String username;
-    @NotBlank
+    @NotBlank(message = "password is mull or empty")
     private String password;
 
 }

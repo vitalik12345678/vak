@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,13 +30,15 @@ public class PersonServiceImpl implements PersonService {
 
     private final DTOConvertor dtoConvertor;
     private final PersonRepository personRepository;
+   private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private static final String PERSON_NOT_EXIST = "person doesn't exist";
     private static final String PERSON_EXIST = "person exist";
 
     @Autowired
-    public PersonServiceImpl(DTOConvertor dtoConvertor, PersonRepository personRepository) {
+    public PersonServiceImpl(DTOConvertor dtoConvertor, PersonRepository personRepository,BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.dtoConvertor = dtoConvertor;
         this.personRepository = personRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -45,6 +48,7 @@ public class PersonServiceImpl implements PersonService {
         }
         Person person = dtoConvertor.convertToEntity(personCreateRequest, new Person());
         person.setAge(LocalDate.now().getYear() - personCreateRequest.getBirthDate().getYear());
+        person.setPassword(bCryptPasswordEncoder.encode(personCreateRequest.getPassword()));
         personRepository.save(person);
         return ResponseEntity.ok(dtoConvertor.convertToDTO(person, new PersonProfileResponse()));
     }
@@ -73,9 +77,10 @@ public class PersonServiceImpl implements PersonService {
         Person existPerson = findPersonByEmail(email);
         Person updatedPerson = dtoConvertor.convertToEntity(personUpdateRequest, new Person());
         updatedPerson.setAge(LocalDate.now().getYear() - personUpdateRequest.getBirthDate().getYear());
-        updatedPerson.setEmail(existPerson.getEmail());
+        updatedPerson.setPassword(bCryptPasswordEncoder.encode(updatedPerson.getPassword()));
+        personRepository.save(updatedPerson);
 
-        return ResponseEntity.ok(dtoConvertor.convertToDTO(existPerson, new PersonProfileResponse()));
+        return ResponseEntity.ok(dtoConvertor.convertToDTO(updatedPerson, new PersonProfileResponse()));
     }
 
     @Override
