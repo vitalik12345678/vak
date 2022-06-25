@@ -17,4 +17,5 @@ public interface PersonRepository extends JpaRepository<Person,Long> {
     @Query("select p from Person p where (:name is null or p.name =:name) and (:age is null or p.age =:age)")
     List<Person> filteredByAgeAndEmail(@Param("name")String name,@Param("age")Integer age);
 
+    boolean existsByEmail(String email);
 }

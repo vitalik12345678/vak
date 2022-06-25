@@ -1,9 +1,9 @@
 package com.task.vak.controller;
 
-import com.task.vak.DTO.PersonCreateRequest;
-import com.task.vak.DTO.PersonFilteredResponse;
-import com.task.vak.DTO.PersonProfileResponse;
-import com.task.vak.DTO.PersonUpdateRequest;
+import com.task.vak.DTO.PersonCreateDTO;
+import com.task.vak.DTO.PersonFilteredDTO;
+import com.task.vak.DTO.PersonProfileDTO;
+import com.task.vak.DTO.PersonUpdateDTO;
 import com.task.vak.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,34 +24,34 @@ public class PersonController {
     }
 
     @GetMapping(value = "v1/filter")
-    public ResponseEntity<List<PersonFilteredResponse>> getFilteredPersons(@RequestParam(required = false,name = "name") String name,
-                                                                          @RequestParam(required = false,name = "age")Integer age){
-        return personService.getFilteredPersons(name,age);
+    public ResponseEntity<List<PersonFilteredDTO>> getFilteredPersons(@RequestParam(required = false,name = "name") String name,
+                                                                      @RequestParam(required = false,name = "age")Integer age){
+        return ResponseEntity.ok( personService.getFilteredPersons(name,age) );
     }
 
     @GetMapping(value = "v1/{email}")
-    public ResponseEntity<PersonProfileResponse> getPerson(@PathVariable String email) {
-        return personService.getPerson(email);
+    public ResponseEntity<PersonProfileDTO> getPerson(@PathVariable String email) {
+        return ResponseEntity.ok(personService.getPerson(email));
     }
 
     @GetMapping("v1/{from}/{amount}")
-    public ResponseEntity<List<PersonProfileResponse>> getPersonList(@PathVariable Integer amount, @PathVariable Integer from) {
-        return personService.getPersonList(from, amount);
+    public ResponseEntity<List<PersonProfileDTO>> getPersonList(@PathVariable Integer amount, @PathVariable Integer from) {
+        return ResponseEntity.ok( personService.getPersonList(from, amount) );
     }
 
     @DeleteMapping("v1/{email}")
-    public ResponseEntity<PersonProfileResponse> deletePerson(@PathVariable String email) {
-        return personService.deletePerson(email);
+    public ResponseEntity<PersonProfileDTO> deletePerson(@PathVariable String email) {
+        return ResponseEntity.ok( personService.deletePerson(email) );
     }
 
     @PostMapping("v1/")
-    public ResponseEntity<PersonProfileResponse> createPerson(@Valid @RequestBody PersonCreateRequest personCreateRequest) {
-        return personService.createPerson(personCreateRequest);
+    public ResponseEntity<PersonProfileDTO> createPerson(@Valid @RequestBody PersonCreateDTO personCreateDTO) {
+        return ResponseEntity.ok( personService.createPerson(personCreateDTO) );
     }
 
     @PutMapping("v1/{email}")
-    public ResponseEntity<PersonProfileResponse> updatePerson(@PathVariable String email, @Valid @RequestBody PersonUpdateRequest personUpdateRequest) {
-        return personService.updatePerson(personUpdateRequest, email);
+    public ResponseEntity<PersonProfileDTO> updatePerson(@PathVariable String email, @Valid @RequestBody PersonUpdateDTO personUpdateDTO) {
+        return ResponseEntity.ok( personService.updatePerson(personUpdateDTO, email) );
     }
 
 }

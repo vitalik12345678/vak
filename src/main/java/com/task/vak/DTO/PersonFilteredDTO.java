@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class PersonProfileResponse {
+public class PersonFilteredDTO {
 
     private String name;
     private String surname;
