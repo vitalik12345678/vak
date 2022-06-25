@@ -1,23 +1,23 @@
 package com.task.vak.service;
 
-import com.task.vak.DTO.PersonCreateRequest;
-import com.task.vak.DTO.PersonFilteredResponse;
-import com.task.vak.DTO.PersonProfileResponse;
-import com.task.vak.DTO.PersonUpdateRequest;
+import com.task.vak.DTO.PersonCreateDTO;
+import com.task.vak.DTO.PersonFilteredDTO;
+import com.task.vak.DTO.PersonProfileDTO;
+import com.task.vak.DTO.PersonUpdateDTO;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface PersonService {
-    ResponseEntity<PersonProfileResponse> createPerson(PersonCreateRequest personCreateRequest);
+    PersonProfileDTO createPerson(PersonCreateDTO personCreateDTO);
 
-    ResponseEntity<List<PersonProfileResponse>> getPersonList(Integer from, Integer amount);
+    List<PersonProfileDTO> getPersonList(Integer from, Integer amount);
 
-    ResponseEntity<PersonProfileResponse> deletePerson(String email);
+    PersonProfileDTO deletePerson(String email);
 
-    ResponseEntity<PersonProfileResponse> getPerson(String email);
+    PersonProfileDTO getPerson(String email);
 
-    ResponseEntity<PersonProfileResponse> updatePerson(PersonUpdateRequest personUpdateRequest,String email);
+    PersonProfileDTO updatePerson(PersonUpdateDTO personUpdateDTO, String email);
 
-    ResponseEntity<List<PersonFilteredResponse>> getFilteredPersons(String name, Integer age);
+    List<PersonFilteredDTO> getFilteredPersons(String name, Integer age);
 }

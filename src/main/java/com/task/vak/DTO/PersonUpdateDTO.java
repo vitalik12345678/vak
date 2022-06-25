@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class PersonCreateRequest {
+public class PersonUpdateDTO {
 
     @NotBlank(message = "name is mull or empty")
     private String name;
@@ -26,5 +26,4 @@ public class PersonCreateRequest {
     private String username;
     @NotBlank(message = "password is mull or empty")
     private String password;
-
 }
