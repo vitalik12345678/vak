@@ -4,14 +4,14 @@ import com.task.vak.DTO.PersonCreateDTO;
 import com.task.vak.DTO.PersonFilteredDTO;
 import com.task.vak.DTO.PersonProfileDTO;
 import com.task.vak.DTO.PersonUpdateDTO;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface PersonService {
     PersonProfileDTO createPerson(PersonCreateDTO personCreateDTO);
 
-    List<PersonProfileDTO> getPersonList(Integer from, Integer amount);
+    List<PersonProfileDTO> findAll(Pageable pageable);
 
     PersonProfileDTO deletePerson(String email);
 
