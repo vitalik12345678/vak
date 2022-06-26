@@ -5,14 +5,14 @@ import com.task.vak.DTO.PersonFilteredDTO;
 import com.task.vak.DTO.PersonProfileDTO;
 import com.task.vak.DTO.PersonUpdateDTO;
 import com.task.vak.entity.Person;
-import com.task.vak.entity.mapper.DTOConvertor;
 import com.task.vak.exceprion.ExistException;
 import com.task.vak.exceprion.NotExistException;
+import com.task.vak.mapper.DTOConvertor;
 import com.task.vak.repository.PersonRepository;
 import com.task.vak.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,28 +46,28 @@ public class PersonServiceImpl implements PersonService {
             throw new ExistException(PERSON_EXIST);
         }
 
-        Person person = dtoConvertor.convertToEntity(personCreateDTO, new Person());
+        Person person = dtoConvertor.convertToEntity(personCreateDTO, Person.class);
         person.setAge(LocalDate.now().getYear() - personCreateDTO.getBirthDate().getYear());
         person.setPassword(bCryptPasswordEncoder.encode(personCreateDTO.getPassword()));
-        personRepository.save(person);
-        return dtoConvertor.convertToDTO(person, new PersonProfileDTO());
+        person = personRepository.save(person);
+        return dtoConvertor.convertToDTO(person, PersonProfileDTO.class);
     }
 
     @Override
-    public List<PersonProfileDTO> getPersonList(Integer from, Integer amount) {
-        return personRepository.findAll(PageRequest.of(from, amount)).getContent().stream().map(element -> dtoConvertor.convertToDTO(element, new PersonProfileDTO())).collect(Collectors.toList());
+    public List<PersonProfileDTO> findAll(Pageable pageable) {
+        return personRepository.findAll(pageable).stream().map(element -> (PersonProfileDTO) dtoConvertor.convertToDTO(element, PersonProfileDTO.class)).collect(Collectors.toList());
     }
 
     @Override
     public PersonProfileDTO deletePerson(String email) {
         Person person = findPerson(email);
         personRepository.delete(person);
-        return dtoConvertor.convertToDTO(person, new PersonProfileDTO());
+        return dtoConvertor.convertToDTO(person, PersonProfileDTO.class);
     }
 
     @Override
     public PersonProfileDTO getPerson(String email) {
-        return dtoConvertor.convertToDTO(findPerson(email), new PersonProfileDTO());
+        return dtoConvertor.convertToDTO(findPerson(email), PersonProfileDTO.class);
     }
 
     @Override
@@ -77,17 +77,17 @@ public class PersonServiceImpl implements PersonService {
             throw new NotExistException(PERSON_NOT_EXIST);
         }
 
-        Person updatedPerson = dtoConvertor.convertToEntity(personUpdateDTO, new Person());
+        Person updatedPerson = dtoConvertor.convertToEntity(personUpdateDTO, Person.class);
         updatedPerson.setAge(LocalDate.now().getYear() - personUpdateDTO.getBirthDate().getYear());
         updatedPerson.setPassword(bCryptPasswordEncoder.encode(updatedPerson.getPassword()));
         personRepository.save(updatedPerson);
 
-        return dtoConvertor.convertToDTO(updatedPerson, new PersonProfileDTO());
+        return dtoConvertor.convertToDTO(updatedPerson, PersonProfileDTO.class);
     }
 
     @Override
     public List<PersonFilteredDTO> getFilteredPersons(String name, Integer age) {
-        return personRepository.filteredByAgeAndEmail(name, age).stream().map(element -> dtoConvertor.convertToDTO(element, new PersonFilteredDTO())).collect(Collectors.toList());
+        return personRepository.filteredByAgeAndEmail(name, age).stream().map(element -> (PersonFilteredDTO) dtoConvertor.convertToDTO(element, PersonFilteredDTO.class)).collect(Collectors.toList());
     }
 
     private Person findPerson(String email) {

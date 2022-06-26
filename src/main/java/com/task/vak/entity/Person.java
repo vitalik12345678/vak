@@ -1,6 +1,6 @@
 package com.task.vak.entity;
 
-import com.task.vak.entity.mapper.Convertable;
+import com.task.vak.mapper.Convertable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

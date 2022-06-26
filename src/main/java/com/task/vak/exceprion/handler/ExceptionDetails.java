@@ -13,4 +13,5 @@ public class ExceptionDetails {
     private  final HttpStatus STATUS;
     private  final String MESSAGE;
     private  final int HTTP_CODE;
+
 }
